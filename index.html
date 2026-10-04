@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -84,12 +84,15 @@
             
             <div class="flex justify-center gap-2 mb-4 bg-rindou-100 p-1.5 rounded-full shadow-inner">
                 <button id="mode-all-btn" class="px-6 py-2 rounded-full font-bold text-sm bg-white text-rindou-700 shadow-sm transition-all duration-200" onclick="setMode('all')">全問モード</button>
-                <button id="mode-review-btn" class="px-6 py-2 rounded-full font-bold text-sm text-gray-500 hover:text-rindou-700 transition-all duration-200" onclick="setMode('review')">復習モード (×のみ)</button>
+                <button id="mode-review-btn" class="px-6 py-2 rounded-full font-bold text-sm text-gray-500 hover:text-rindou-700 transition-all duration-200" onclick="setMode('review')">
+                    復習モード <span id="review-count-badge" class="ml-1 px-2 py-0.5 rounded-full text-xs font-bold bg-rose-500 text-white hidden">0問</span>
+                </button>
             </div>
 
-            <div class="mb-4 text-gray-500 font-medium text-sm flex gap-4">
+            <div class="mb-4 text-gray-500 font-medium text-sm flex flex-wrap justify-center items-center gap-3 md:gap-4 bg-white/80 backdrop-blur-sm px-5 py-2 rounded-full shadow-sm border border-rindou-100">
+                <span id="round-badge" class="bg-rindou-200 text-rindou-900 text-xs px-2.5 py-0.5 rounded-full font-bold">第 <span id="round-number-display">1</span> 周目</span>
                 <span>出題: <span id="current-index-display" class="font-bold text-rindou-700">1</span> / <span id="total-words-display">0</span>問</span>
-                <span class="border-l border-gray-300 pl-4">現在の連続学習: <span id="session-count-display" class="font-bold text-rindou-600">0</span>問</span>
+                <span class="border-l border-gray-300 pl-3">連続: <span id="session-count-display" class="font-bold text-rindou-600">0</span>問</span>
             </div>
 
             <div class="flex flex-col md:flex-row items-center justify-center w-full max-w-2xl gap-6">
@@ -139,7 +142,11 @@
         </div>
 
         <div id="list-area" class="w-full hidden flex-col items-center">
-            <h2 class="text-xl font-bold mb-4 text-gray-800">×がついた単語一覧</h2>
+            <h2 class="text-xl font-bold mb-3 text-gray-800">単語学習履歴一覧</h2>
+            <div class="flex gap-2 mb-4 bg-rindou-100 p-1 rounded-full shadow-inner">
+                <button id="filter-review-btn" class="px-4 py-1.5 rounded-full text-xs font-bold bg-white text-rindou-700 shadow-sm transition-all" onclick="setListFilter('review')">要復習（直近×）のみ</button>
+                <button id="filter-all-btn" class="px-4 py-1.5 rounded-full text-xs font-bold text-gray-500 hover:text-rindou-700 transition-all" onclick="setListFilter('all')">全履歴（累計ミスあり）</button>
+            </div>
             <div class="w-full overflow-x-auto bg-white rounded-2xl shadow-sm border border-rindou-100">
                 <table class="min-w-full leading-normal">
                     <thead>
@@ -2006,12 +2013,50 @@
         
         let sessionCount = 0; 
         const SESSION_LIMIT = 30; // 30問で区切る
+        let currentRound = 1;
+        let listFilter = 'review'; // 'review' (要復習のみ) or 'all' (累計すべて)
 
         let isFlipped = false;
         let currentSort = { key: 'mistakes', order: 'desc' };
         let unsubscribe = null;
         let syncCode = localStorage.getItem('suzu_flashcards_sync_code') || '';
         let isSyncing = false; 
+
+        // 最新の回答判定を取得（'〇' | '×' | null）
+        function getWordLatestResult(word) {
+            if (word.latestResult) return word.latestResult;
+            if (word.history && word.history.length > 0) {
+                return word.history[word.history.length - 1];
+            }
+            return null;
+        }
+
+        // 現在要復習（最新が×）の単語一覧を取得
+        function getReviewWords() {
+            return wordData.filter(w => getWordLatestResult(w) === '×');
+        }
+
+        // 復習モードのバッジ更新
+        function updateReviewBadge() {
+            const count = getReviewWords().length;
+            const badge = document.getElementById('review-count-badge');
+            if (!badge) return;
+            if (count > 0) {
+                badge.textContent = `${count}問`;
+                badge.classList.remove('hidden');
+            } else {
+                badge.textContent = '0問';
+                badge.classList.add('hidden');
+            }
+        }
+
+        function saveRound() {
+            try {
+                localStorage.setItem('suzu_current_round_' + syncCode, currentRound.toString());
+                const roundEl = document.getElementById('round-number-display');
+                if (roundEl) roundEl.textContent = currentRound;
+            } catch(e) {}
+        }
 
         // 息子さんのアプリとデータが混ざらないよう、専用のappIdとコレクション名を使用
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'flashcards-suzu-jh1-180';
@@ -2052,10 +2097,24 @@
                     if (Array.isArray(parsed)) {
                         wordData = initialWordList.map(item => {
                             const found = parsed.find(p => p.id === item.id);
-                            return found ? { ...item, mistakes: found.mistakes || 0, history: found.history || [] } : item;
+                            if (!found) return { ...item, latestResult: null };
+                            const history = found.history || [];
+                            const latestResult = found.latestResult || (history.length > 0 ? history[history.length - 1] : null);
+                            return {
+                                ...item,
+                                mistakes: found.mistakes || 0,
+                                history: history,
+                                latestResult: latestResult
+                            };
                         });
                     }
                 }
+                const savedRound = localStorage.getItem('suzu_current_round_' + syncCode);
+                if (savedRound) {
+                    currentRound = parseInt(savedRound, 10) || 1;
+                }
+                saveRound();
+                updateReviewBadge();
             } catch (e) {
                 console.warn("Failed to load local storage progress:", e);
             }
@@ -2064,9 +2123,15 @@
         function saveLocalProgress() {
             try {
                 const progress = wordData
-                    .filter(w => w.mistakes > 0 || (w.history && w.history.length > 0))
-                    .map(w => ({ id: w.id, mistakes: w.mistakes, history: w.history }));
+                    .filter(w => w.mistakes > 0 || (w.history && w.history.length > 0) || w.latestResult)
+                    .map(w => ({ 
+                        id: w.id, 
+                        mistakes: w.mistakes, 
+                        history: w.history,
+                        latestResult: w.latestResult 
+                    }));
                 localStorage.setItem('suzu_progress_' + syncCode, JSON.stringify(progress));
+                localStorage.setItem('suzu_current_round_' + syncCode, currentRound.toString());
             } catch (e) {
                 console.warn("Failed to save local progress:", e);
             }
@@ -2112,16 +2177,29 @@
                     if (data.progress) {
                         wordData = initialWordList.map(item => {
                             const saved = data.progress.find(p => p.id === item.id);
-                            return saved ? { ...item, mistakes: saved.mistakes || 0, history: saved.history || [] } : item;
+                            if (!saved) return { ...item, latestResult: null };
+                            const history = saved.history || [];
+                            const latestResult = saved.latestResult || (history.length > 0 ? history[history.length - 1] : null);
+                            return {
+                                ...item,
+                                mistakes: saved.mistakes || 0,
+                                history: history,
+                                latestResult: latestResult
+                            };
                         });
+                        if (data.currentRound) {
+                            currentRound = data.currentRound;
+                            saveRound();
+                        }
                         saveLocalProgress();
+                        updateReviewBadge();
                     }
 
                     if (data.orderStates && data.orderStates.all && data.orderStates.all.indices && data.orderStates.all.indices.length === wordData.length) {
                         orderStates = data.orderStates;
                     }
                     
-                    if (learningMode === 'review' && wordData.filter(w => w.mistakes > 0).length === 0) {
+                    if (learningMode === 'review' && getReviewWords().length === 0) {
                         learningMode = 'all';
                         updateModeUI();
                     }
@@ -2144,13 +2222,18 @@
             if (!syncCode || !auth || !auth.currentUser || !db || isSyncing) return;
             
             const progress = wordData
-                .filter(w => w.mistakes > 0 || (w.history && w.history.length > 0))
-                .map(w => ({ id: w.id, mistakes: w.mistakes, history: w.history }));
+                .filter(w => w.mistakes > 0 || (w.history && w.history.length > 0) || w.latestResult)
+                .map(w => ({ 
+                    id: w.id, 
+                    mistakes: w.mistakes, 
+                    history: w.history,
+                    latestResult: w.latestResult 
+                }));
                 
             const syncDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'flashcard_progress_suzu_180', syncCode);
             
             try {
-                await setDoc(syncDocRef, { progress, orderStates, updatedAt: new Date().toISOString() }, { merge: true });
+                await setDoc(syncDocRef, { progress, orderStates, currentRound, updatedAt: new Date().toISOString() }, { merge: true });
             } catch (err) {
                 console.warn("Failed to save to cloud:", err);
             }
@@ -2183,7 +2266,9 @@
             if (mode === 'all') {
                 indices = Array.from({ length: wordData.length }, (_, i) => i);
             } else if (mode === 'review') {
-                wordData.forEach((w, i) => { if (w.mistakes > 0) indices.push(i); });
+                wordData.forEach((w, i) => { 
+                    if (getWordLatestResult(w) === '×') indices.push(i); 
+                });
             }
 
             for (let i = indices.length - 1; i > 0; i--) {
@@ -2197,39 +2282,47 @@
         function updateModeUI() {
             const btnAll = document.getElementById('mode-all-btn');
             const btnReview = document.getElementById('mode-review-btn');
+            const roundBadge = document.getElementById('round-badge');
             
             if (learningMode === 'all') {
                 btnAll.className = "px-6 py-2 rounded-full font-bold text-sm bg-white text-rindou-700 shadow-sm transition-all duration-200";
                 btnReview.className = "px-6 py-2 rounded-full font-bold text-sm text-gray-500 hover:text-rindou-700 transition-all duration-200";
+                if (roundBadge) roundBadge.classList.remove('hidden');
             } else {
                 btnReview.className = "px-6 py-2 rounded-full font-bold text-sm bg-white text-rose-600 shadow-sm transition-all duration-200";
                 btnAll.className = "px-6 py-2 rounded-full font-bold text-sm text-gray-500 hover:text-rindou-700 transition-all duration-200";
+                if (roundBadge) roundBadge.classList.add('hidden');
             }
+            updateReviewBadge();
         }
 
         window.setMode = function(mode) {
             if (mode === 'review') {
-                const hasMistakes = wordData.some(w => w.mistakes > 0);
-                if (!hasMistakes) {
-                    showModal('alert', '×がついた単語がありません。素晴らしい！🎉', 'OK', closeModal);
+                const reviewWords = getReviewWords();
+                if (reviewWords.length === 0) {
+                    showModal('alert', '現在、要復習（直近×）の単語はありません！\nすべて正解済みです。すずちゃん素晴らしい！🌸', '全問モードを続ける', closeModal);
                     return;
                 }
             }
             
             learningMode = mode;
             updateModeUI();
-            
-            if (orderStates[mode].indices.length === 0) {
-                initShuffle(mode);
-            }
-            
+            initShuffle(mode);
             showCard();
         };
 
         function showCard() {
             const state = orderStates[learningMode];
             if (!state || state.indices.length === 0) {
-                initShuffle(learningMode);
+                if (learningMode === 'review') {
+                    initShuffle('review');
+                    if (orderStates.review.indices.length === 0) {
+                        setMode('all');
+                        return;
+                    }
+                } else {
+                    initShuffle('all');
+                }
             }
             if (state.indices.length === 0) return;
             
@@ -2253,7 +2346,8 @@
             totalWordsDisplay.textContent = state.indices.length;
             sessionCountDisplay.textContent = sessionCount;
 
-            if (word.mistakes > 0) {
+            const isCurrentMistake = getWordLatestResult(word) === '×';
+            if (word.mistakes > 0 || isCurrentMistake) {
                 frontMistakeNumberEl.textContent = word.mistakes;
                 backMistakeNumberEl.textContent = word.mistakes;
                 frontMistakeCountEl.classList.remove('hidden');
@@ -2290,6 +2384,7 @@
 
             const realIndex = state.indices[state.currentIndex];
             const word = wordData[realIndex];
+            if (!word) return;
             
             // 直近5回分の履歴のみ保持
             const historyMark = isCorrect ? '〇' : '×';
@@ -2299,22 +2394,108 @@
                 word.history.shift();
             }
 
+            // 直近の回答結果を更新（克服判定用）
+            word.latestResult = historyMark;
+
             if (!isCorrect) {
                 word.mistakes = (word.mistakes || 0) + 1;
             }
 
             sessionCount++;
+            updateReviewBadge();
             
             state.currentIndex++;
-            if (state.currentIndex >= state.indices.length) {
-                initShuffle(learningMode); 
-            }
-            
+            const isModeFinished = state.currentIndex >= state.indices.length;
+
             saveCloudData();
+
+            if (isModeFinished) {
+                if (learningMode === 'all') {
+                    // === 周回完走時の節目イベント（単語数動的対応） ===
+                    const reviewWords = getReviewWords();
+                    const mistakeCount = reviewWords.length;
+                    const correctCount = wordData.length - mistakeCount;
+                    const finishedRound = currentRound;
+
+                    if (mistakeCount > 0) {
+                        showModal('round_clear', 
+                            `🏆 第${finishedRound}周目をクリアしました！（全${wordData.length}問）\n\n・正解（〇）: ${correctCount}問\n・要復習（×）: ${mistakeCount}問\n\n今周で間違えた${mistakeCount}問だけをすぐに復習しますか？`,
+                            `間違えた${mistakeCount}問を復習する`,
+                            () => {
+                                closeModal();
+                                sessionCount = 0;
+                                currentRound++;
+                                saveRound();
+                                setMode('review');
+                            },
+                            `第${finishedRound + 1}周へ進む`,
+                            () => {
+                                closeModal();
+                                sessionCount = 0;
+                                currentRound++;
+                                saveRound();
+                                initShuffle('all');
+                                showCard();
+                            }
+                        );
+                    } else {
+                        showModal('round_perfect',
+                            `🌸✨ 第${finishedRound}周目 パーフェクト達成！！ ✨🌸\n\n全${wordData.length}問すべて正解しました！\nすずちゃん、素晴らしい実力です！`,
+                            `第${finishedRound + 1}周へ進む`,
+                            () => {
+                                closeModal();
+                                sessionCount = 0;
+                                currentRound++;
+                                saveRound();
+                                initShuffle('all');
+                                showCard();
+                            },
+                            `一覧を見る`,
+                            () => {
+                                closeModal();
+                                sessionCount = 0;
+                                switchTab('list');
+                            }
+                        );
+                    }
+                    return;
+                } else if (learningMode === 'review') {
+                    // === 復習モード完走時 ===
+                    const remainingMistakes = getReviewWords().length;
+                    if (remainingMistakes === 0) {
+                        showModal('review_complete',
+                            `🌸 克服完了！！\n\n間違えた問題をすべて正解（〇）にできました！\n苦手単語ゼロ達成です！すずちゃん素晴らしい！`,
+                            `全問モードに戻る`,
+                            () => {
+                                closeModal();
+                                sessionCount = 0;
+                                setMode('all');
+                            }
+                        );
+                    } else {
+                        showModal('review_continue',
+                            `復習モード1周終了！\nまだ苦手な問題が ${remainingMistakes}問 残っています。\nもう一度復習しますか？`,
+                            `残りの${remainingMistakes}問を復習する`,
+                            () => {
+                                closeModal();
+                                initShuffle('review');
+                                showCard();
+                            },
+                            `全問モードに戻る`,
+                            () => {
+                                closeModal();
+                                sessionCount = 0;
+                                setMode('all');
+                            }
+                        );
+                    }
+                    return;
+                }
+            }
 
             // 30問区切り
             if (sessionCount >= SESSION_LIMIT) {
-                showModal('session', '🎉 30問クリアしました！\nすずちゃん、お疲れ様！少し休憩しますか？', 'このまま続ける', () => {
+                showModal('session', `🎉 ${SESSION_LIMIT}問クリアしました！\nすずちゃん、お疲れ様！少し休憩しますか？`, 'このまま続ける', () => {
                     sessionCount = 0;
                     closeModal();
                     showCard();
@@ -2374,23 +2555,49 @@
             }
         };
 
+        window.setListFilter = function(filter) {
+            listFilter = filter;
+            const btnReview = document.getElementById('filter-review-btn');
+            const btnAll = document.getElementById('filter-all-btn');
+            if (btnReview && btnAll) {
+                if (filter === 'review') {
+                    btnReview.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-white text-rindou-700 shadow-sm transition-all";
+                    btnAll.className = "px-4 py-1.5 rounded-full text-xs font-bold text-gray-500 hover:text-rindou-700 transition-all";
+                } else {
+                    btnAll.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-white text-rindou-700 shadow-sm transition-all";
+                    btnReview.className = "px-4 py-1.5 rounded-full text-xs font-bold text-gray-500 hover:text-rindou-700 transition-all";
+                }
+            }
+            updateList();
+        };
+
         function updateList() {
             const tbody = document.getElementById('mistake-list-body');
             const noMsg = document.getElementById('no-mistakes-msg');
             tbody.innerHTML = '';
 
-            let mistakeWords = wordData.filter(word => word.mistakes > 0);
+            let displayWords = [];
+            if (listFilter === 'review') {
+                displayWords = wordData.filter(word => getWordLatestResult(word) === '×');
+            } else {
+                displayWords = wordData.filter(word => word.mistakes > 0 || (word.history && word.history.length > 0));
+            }
 
-            if (mistakeWords.length === 0) {
+            if (displayWords.length === 0) {
                 document.querySelector('table').classList.add('hidden');
                 noMsg.classList.remove('hidden');
+                if (listFilter === 'review') {
+                    noMsg.innerHTML = '✨ 現在、要復習（直近×）の単語はありません！<br>すべて克服済みです。素晴らしい！🌸';
+                } else {
+                    noMsg.innerHTML = 'まだ履歴のある単語はありません。どんどん問題を解いていきましょう！📚';
+                }
                 return;
             } else {
                 document.querySelector('table').classList.remove('hidden');
                 noMsg.classList.add('hidden');
             }
 
-            mistakeWords.sort((a, b) => {
+            displayWords.sort((a, b) => {
                 let valA = a[currentSort.key];
                 let valB = b[currentSort.key];
                 
@@ -2412,21 +2619,32 @@
                 activeSortEl.textContent = currentSort.order === 'asc' ? '▲' : '▼';
             }
 
-            mistakeWords.forEach(word => {
+            displayWords.forEach(word => {
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-rindou-100 hover:bg-rindou-50/50 transition-colors";
                 
+                const isCurrentMistake = getWordLatestResult(word) === '×';
+                const statusBadge = isCurrentMistake
+                    ? '<span class="bg-rose-500 text-white text-[11px] px-2 py-0.5 rounded-full font-bold shadow-sm inline-block">要復習 (×)</span>'
+                    : '<span class="bg-emerald-500 text-white text-[11px] px-2 py-0.5 rounded-full font-bold shadow-sm inline-block">克服済み (〇)</span>';
+
                 const historyMarks = (word.history || []).map(mark => 
                     mark === '〇' ? '<span class="text-emerald-500 font-bold mx-1">〇</span>' : '<span class="text-rose-500 font-bold mx-1">×</span>'
                 ).join('');
 
                 tr.innerHTML = `
-                    <td class="px-5 py-4 text-sm font-bold text-gray-800">${word.en} <span class="text-xs font-normal text-rindou-400 ml-1">${word.kana}</span></td>
+                    <td class="px-5 py-4 text-sm font-bold text-gray-800">
+                        <div class="flex items-center gap-2">
+                            <span>${word.en}</span>
+                            <span class="text-xs font-normal text-rindou-400">${word.kana}</span>
+                            ${statusBadge}
+                        </div>
+                    </td>
                     <td class="px-5 py-4 text-sm text-gray-600">${word.ja}</td>
                     <td class="px-5 py-4 text-sm">
-                        <div class="font-bold text-rose-500 mb-1">累計: × ${word.mistakes}回</div>
-                        <div class="text-xs bg-rindou-50 p-1.5 rounded-lg inline-block border border-rindou-200">
-                            最近: ${historyMarks || '<span class="text-gray-400">記録なし</span>'}
+                        <div class="font-bold text-gray-700 mb-1">通算ミス: <span class="text-rose-500 font-bold">${word.mistakes}回</span></div>
+                        <div class="text-xs bg-rindou-50 px-2 py-1 rounded-lg inline-block border border-rindou-200">
+                            直近: ${historyMarks || '<span class="text-gray-400">記録なし</span>'}
                         </div>
                     </td>
                 `;
@@ -2563,8 +2781,12 @@
             wordData.forEach(word => {
                 word.mistakes = 0;
                 word.history = [];
+                word.latestResult = null;
             });
             sessionCount = 0;
+            currentRound = 1;
+            saveRound();
+            updateReviewBadge();
             learningMode = 'all';
             updateModeUI();
             initShuffle('all');
@@ -2581,6 +2803,8 @@
             document.getElementById('sync-code-input').value = syncCode;
             totalWordsDisplay.textContent = wordData.length;
             loadSavedLocalProgress();
+            saveRound();
+            updateReviewBadge();
             initShuffle('all');
             initShuffle('review');
             showCard();

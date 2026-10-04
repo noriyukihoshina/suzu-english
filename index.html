@@ -2058,18 +2058,14 @@
             } catch(e) {}
         }
 
-        // 息子さんのアプリとデータが混ざらないよう、専用のappIdとコレクション名を使用
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'flashcards-suzu-jh1-180';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' 
-            ? JSON.parse(__firebase_config) 
-            : {
-                apiKey: "AIzaSyDemoKeyOnlyForFallback123456",
-                authDomain: "demo-app.firebaseapp.com",
-                projectId: "demo-app",
-                storageBucket: "demo-app.appspot.com",
-                messagingSenderId: "1234567890",
-                appId: "1:1234567890:web:1234567890"
-            };
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZaun9Qc6AL0lI40iLGI_23N0pmlUIaac",
+            authDomain: "english-app-97fdb.firebaseapp.com",
+            projectId: "english-app-97fdb",
+            storageBucket: "english-app-97fdb.firebasestorage.app",
+            messagingSenderId: "909278857143",
+            appId: "1:909278857143:web:6bcff3c15b292bb1c14a32"
+        };
 
         let app = null;
         let auth = null;
@@ -2153,10 +2149,14 @@
                     db = getFirestore(app);
                 }
 
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (authErr) {
+                    console.log("Anonymous auth skipped or not required:", authErr);
                 }
                 subscribeToSyncData();
             } catch (err) {
@@ -2168,7 +2168,7 @@
             if (!db || !syncCode) return;
             if (unsubscribe) unsubscribe();
 
-            const syncDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'flashcard_progress_suzu_180', syncCode);
+            const syncDocRef = doc(db, 'flashcard_progress_suzu', syncCode);
             const statusEl = document.getElementById('sync-status');
             if (statusEl) statusEl.classList.remove('hidden');
 
@@ -2225,7 +2225,7 @@
 
         async function saveCloudData() {
             saveLocalProgress();
-            if (!syncCode || !auth || !auth.currentUser || !db || isSyncing) return;
+            if (!syncCode || !db || isSyncing) return;
             
             const progress = wordData
                 .filter(w => w.mistakes > 0 || (w.history && w.history.length > 0) || w.latestResult || w.mistakeRound != null)
@@ -2237,7 +2237,7 @@
                     mistakeRound: w.mistakeRound 
                 }));
                 
-            const syncDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'flashcard_progress_suzu_180', syncCode);
+            const syncDocRef = doc(db, 'flashcard_progress_suzu', syncCode);
             
             try {
                 await setDoc(syncDocRef, { progress, orderStates, currentRound, updatedAt: new Date().toISOString() }, { merge: true });

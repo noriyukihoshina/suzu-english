@@ -1,0 +1,46 @@
+have	持っている、飼っている	A	I have two dogs.🔊（私は犬を2匹飼っています。）
+like	好きである	A	She likes music very much.🔊（彼女は音楽が大好きです。）
+play	（スポーツを）する、（楽器を）演奏する	A	We play soccer after school.🔊（私たちは放課後にサッカーをします。）
+study	勉強する	A	He studies English every day.🔊（彼は毎日英語を勉強します。）
+live	住んでいる、生きる	A	They live in Tokyo.🔊（彼らは東京に住んでいます。）
+know	知っている	A	I do not know his name.🔊（私は彼の名前を知りません。）
+read	読む	A	Ken reads books on Sundays.🔊（健は日曜日に本を読みます。）
+write	書く	A	Please write your name here.🔊（ここにあなたの名前を書いてください。）
+speak	話す	A	Can you speak Japanese?🔊（あなたは日本語を話せますか。）
+listen	（じっと）聞く	B	Listen to the teacher carefully.🔊（先生の言うことを注意深く聞きなさい。）
+watch	（動くものを）見る	A	They watch television at night.🔊（彼らは夜にテレビを見ます。）
+come	来る	A	Come here, please.🔊（どうぞこちらへ来てください。）
+go	行く	A	I go to school by bus.🔊（私はバスで学校へ行きます。）
+make	作る	A	My mother makes delicious cake.🔊（私の母はおいしいケーキを作ります。）
+help	助ける、手伝う	A	Can you help me with my homework?🔊（私の宿題を手伝ってくれますか。）
+want	欲しい、望む	A	I want a new bicycle.🔊（私は新しい自転車が欲しいです。）
+use	使う	A	May I use this computer?🔊（このコンピュータを使ってもよいですか。）
+run	走る	A	He can run very fast.🔊（彼はとても速く走ることができます。）
+eat	食べる	A	We eat lunch at noon.🔊（私たちは正午に昼食を食べます。）
+I / my / me / mine	私（主格・所有格・目的格・所有代名詞）	A	This notebook is mine.🔊（このノートは私のものです。）
+you / your / you / yours	あなた（たち）	A	Is this pen yours?🔊（このペンはあなたのものですか。）
+he / his / him / his	彼	A	I know him very well.🔊（私は彼のことをよく知っています。）
+she / her / her / hers	彼女	A	That bag is hers.🔊（あのかばんは彼女のものです。）
+we / our / us / ours	私たち	A	Our school is near the station.🔊（私たちの学校は駅の近くにあります。）
+they / their / them / theirs	彼ら、彼女ら、それら	A	Tell them the news.🔊（彼らにその知らせを伝えてください。）
+what	何	A	What do you have in your hand?🔊（手に何を持っていますか。）
+who	だれ	A	Who is that tall boy?🔊（あの背の高い男の子はだれですか。）
+where	どこ	A	Where do you live?🔊（あなたはどこに住んでいますか。）
+when	いつ	A	When is your birthday?🔊（あなたの誕生日はいつですか。）
+how	どのように、どんな様子で	A	How do you come to school?🔊（あなたはどうやって学校へ来ますか。）
+can	〜できる	A	She can swim fast.🔊（彼女は速く泳ぐことができます。）
+good	良い、上手な	A	He is a good tennis player.🔊（彼はテニスが上手です。）
+new	新しい	A	I bought a new pen.🔊（私は新しいペンを買いました。）
+old	古い、年をとった	A	This temple is very old.🔊（この寺はとても古いです。）
+big	大きい	A	That is a big dog.🔊（あれは大きな犬です。）
+small	小さい	A	My room is small but clean.🔊（私の部屋は小さいが清潔です。）
+busy	忙しい	A	My father is busy today.🔊（私の父は今日忙しいです。）
+very	とても、大変	A	Thank you very much.🔊（どうもありがとうございます。）
+always	いつも、常に	B	She always gets up early.🔊（彼女はいつも早く起きます。）
+usually	普段は、たいてい	B	I usually study in my room.🔊（私はたいてい自分の部屋で勉強します。）
+often	しばしば、よく	B	We often go to the library.🔊（私たちはよく図書館へ行きます。）
+and	〜と、そして	A	I like apples and oranges.🔊（私はリンゴとオレンジが好きです。）
+but	しかし	A	I am tired, but I am happy.🔊（私は疲れていますが、幸せです。）
+in / on / at	〜の中に／〜の上に／〜に（場所・時）	A	He is at school now.🔊（彼は今学校にいます。）
+with	〜と一緒に、〜を使って	A	I play tennis with Tom.🔊（私はトムと一緒にテニスをします。）
+for	〜のために、〜の間	A	This present is for you.🔊（このプレゼントはあなたへのものです。）

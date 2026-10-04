@@ -1,0 +1,99 @@
+have	ハブ	持っている、I have a dog. （私は犬を飼っています。）
+do	ドゥー	する	I do my homework every day. （私は毎日宿題をします。）
+go	ゴー	行く	I go to school by bus. （私はバスで学校に行きます。）
+come	カム	来る	She comes to my house. （彼女は私の家に来ます。）
+get	ゲット	得る、着く	I get up at seven. （私は7時に起きます。）
+make	メイク	作る	I make lunch for my family. （私は家族のために昼食を作ります。）
+use	ユーズ	使う	I use a computer every day. （私は毎日コンピュータを使います。）
+see	スィー	見る、わかる	I see a bird in the tree. （私は木の中に鳥を見ます。）
+look	ルック	見る、～に見える	She looks happy today. （彼女は今日うれしそうです。）
+eat	イート	食べる	I eat breakfast every morning. （私は毎朝朝食を食べます。）
+drink	ドリンク	飲む	I drink milk every morning. （私は毎朝牛乳を飲みます。）
+play	プレイ	遊ぶ、演奏する	I play soccer after school. （私は放課後にサッカーをします。）
+study	スタディ	勉強する	I study English every night. （私は毎晩英語を勉強します。）
+read	リード	読む	I read a book before bed. （私は寝る前に本を読みます。）
+write	ライト	書く	I write a letter to my friend. （私は友人に手紙を書きます。）
+speak	スピーク	話す	He speaks English well. （彼は英語を上手に話します。）
+listen	リスン	聞く	I listen to music after school. （私は放課後に音楽を聞きます。）
+know	ノウ	知っている	I know his name. （私は彼の名前を知っています。）
+think	スィンク	思う、考える	I think this is a good idea. （私はこれはよい考えだと思います。）
+like	ライク	好む	I like cats. （私は猫が好きです。）
+want	ウォント	欲しい	I want a new bag. （私は新しいカバンが欲しいです。）
+need	ニード	必要とする	I need your help. （私はあなたの助けが必要です。）
+help	ヘルプ	助ける	She helps her mother every day. （彼女は毎日お母さんを手伝います。）
+teach	ティーチ	教える	He teaches math at our school. （彼は私たちの学校で数学を教えています。）
+learn	ラーン	学ぶ	I learn English at school. （私は学校で英語を学びます。）
+live	リブ	住む、生きる	I live in Tokyo. （私は東京に住んでいます。）
+work	ワーク	働く	My father works at a hospital. （私の父は病院で働いています。）
+run	ラン	走る	I run in the park every morning. （私は毎朝公園で走ります。）
+swim	スウィム	泳ぐ	I swim in the sea every summer. （私は毎年夏に海で泳ぎます。）
+walk	ウォーク	歩く	I walk to school every day. （私は毎日歩いて学校に行きます。）
+buy	バイ	買う	I buy a book at the store. （私は店で本を買います。）
+visit	ビジット	訪問する	I visit my grandmother on Sundays. （私は日曜日に祖母を訪ねます。）
+meet	ミート	会う	I meet my friends at the park. （私は公園で友人に会います。）
+try	トライ	試す	I try my best every day. （私は毎日最善を尽くします。）
+school	スクール	学校	I go to school by bike.（私は自転車で学校に行きます。）
+teacher	ティーチャー	先生	My teacher is very kind.（私の先生はとても親切です。）
+student	ステューデント	生徒	I am a student.（私は生徒です。）
+friend	フレンド	友人	She is my best friend.（彼女は私の一番の友人です。）
+family	ファミリー	家族	I love my family.（私は家族が大好きです。）
+mother	マザー	母	My mother cooks dinner every day.（私の母は毎日夕食を作ります。）
+father	ファーザー	父	My father works in Tokyo.（私の父は東京で働いています。）
+brother	ブラザー	兄弟	My brother plays soccer.（私の兄弟はサッカーをします。）
+sister	スィスター	姉妹	My sister likes music.（私の姉妹は音楽が好きです。）
+book	ブック	本	I read a book every night.（私は毎晩本を読みます。）
+desk	デスク	机	There is a pen on the desk.（机の上にペンがあります。）
+chair	チェア	いす	Please sit on the chair.（いすに座ってください。）
+bag	バッグ	カバン	I have a new bag.（私は新しいカバンを持っています。）
+pen	ペン	ペン	I write with a pen.（私はペンで書きます。）
+notebook	ノートブック	ノート	I write in my notebook every day.（私は毎日ノートに書きます。）
+house	ハウス	家	I live in a small house.（私は小さな家に住んでいます。）
+room	ルーム	部屋	My room is clean.（私の部屋はきれいです。）
+door	ドア	ドア	Please open the door.（ドアを開けてください。）
+window	ウィンドウ	窓	I open the window every morning.（私は毎朝窓を開けます。）
+food	フード	食べ物	I like Japanese food.（私は日本の食べ物が好きです。）
+lunch	ランチ	昼食	I eat lunch at school.（私は学校で昼食を食べます。）
+breakfast	ブレックファスト	朝食	I eat breakfast at seven.（私は7時に朝食を食べます。）
+dinner	ディナー	夕食	We have dinner together.（私たちは一緒に夕食を食べます。）
+water	ウォーター	水	I drink water every day.（私は毎日水を飲みます。）
+time	タイム	時間、回	I don't have time today.（私は今日時間がありません。）
+day	デイ	日	Today is a sunny day.（今日は晴れた日です。）
+morning	モーニング	朝	I run every morning.（私は毎朝走ります。）
+night	ナイト	夜	I study at night.（私は夜に勉強します。）
+week	ウィーク	週	I play tennis twice a week.（私は週に2回テニスをします。）
+year	イヤー	年	I am thirteen years old.（私は13歳です。）
+music	ミュージック	音楽	I listen to music every day.（私は毎日音楽を聞きます。）
+sport	スポーツ	スポーツ	My favorite sport is soccer.（私の好きなスポーツはサッカーです。）
+dog	ドッグ	犬	I have a dog.（私は犬を飼っています。）
+cat	キャット	猫	My cat is white.（私の猫は白いです。）
+flower	フラウアー	花	I like flowers.（私は花が好きです。）
+big	ビッグ	大きい	This is a big dog.（これは大きな犬です。）
+small	スモール	小さい	I have a small cat.（私は小さな猫を飼っています。）
+long	ロング	長い	This river is very long.（この川はとても長いです。）
+short	ショート	短い、背が低い	My brother is short.（私の兄弟は背が低いです。）
+tall	トール	背の高い	My father is tall.（私の父は背が高いです。）
+new	ニュー	新しい	I have a new bag.（私は新しいカバンを持っています。）
+old	オールド	古い、年をとった	This is an old book.（これは古い本です。）
+good	グッド	よい	She is a good student.（彼女はよい生徒です。）
+bad	バッド	悪い	Today is a bad day.（今日はついていない日です。）
+fast	ファスト	速い	He is a fast runner.（彼は足の速いランナーです。）
+slow	スロー	遅い	This bus is slow.（このバスは遅いです。）
+hot	ホット	暑い、熱い	It is hot today.（今日は暑いです。）
+cold	コールド	冷たい、寒い	It is cold in winter.（冬は寒いです。）
+warm	ウォーム	暖かい	It is warm in spring.（春は暖かいです。）
+cool	クール	涼しい	It is cool in autumn.（秋は涼しいです。）
+happy	ハッピー	幸福な、楽しい	I am happy today.（私は今日幸せです。）
+sad	サッド	悲しい	She looks sad today.（彼女は今日悲しそうです。）
+angry	アングリー	怒った	He is angry now.（彼は今怒っています。）
+kind	カインド	親切な	My teacher is kind.（私の先生は親切です。）
+busy	ビジー	忙しい	My mother is busy every day.（私の母は毎日忙しいです。）
+easy	イージー	やさしい	This question is easy.（この問題はやさしいです。）
+difficult	ディフィカルト	難しい	Math is difficult for me.（数学は私には難しいです。）
+interesting	インタレスティング	興味深い	This book is interesting.（この本は面白いです。）
+beautiful	ビューティフル	美しい	This flower is beautiful.（この花は美しいです。）
+famous	フェイマス	有名な	He is a famous singer.（彼は有名な歌手です。）
+popular	ポピュラー	人気のある	Soccer is popular in Japan.（サッカーは日本で人気があります。）
+hungry	ハングリー	空腹の	I am hungry now.（私は今お腹が空いています。）
+tired	タイアード	疲れた	I am tired after school.（私は放課後疲れています。）
+important	インポータント	大切な	English is important for me.（英語は私にとって大切です。）
+free	フリー	ひまな、無料の	I am free this Sunday.（私はこの日曜日はひまです。）
